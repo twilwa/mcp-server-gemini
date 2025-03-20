@@ -1,10 +1,10 @@
 import WebSocket from 'ws';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { MCPHandlers } from './handlers';
-import { ProtocolManager } from './protocol';
-import { ERROR_CODES } from './protocol';
-import { MCPRequest, NotificationMessage, ConnectionState } from './types';
-import http from 'http';
+import { MCPHandlers } from './handlers.js';
+import { ProtocolManager } from './protocol.js';
+import { ERROR_CODES } from './protocol.js';
+import type { MCPRequest, NotificationMessage, ConnectionState } from './types.js';
+import http from 'node:http';
 
 export class MCPServer {
   private wss: WebSocket.Server;
@@ -14,12 +14,26 @@ export class MCPServer {
   private httpServer: http.Server;
   private startTime: Date;
 
-  constructor(apiKey: string, port: number = 3005) {
+  constructor(apiKey: string, port = 3005) {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    
+    // Create model instances
+    const textModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const imageModel = genAI.getGenerativeModel({ 
+      model: 'gemini-2.0-flash-exp-image-generation',
+      generationConfig: {
+        responseModalities: ['Text', 'Image']
+      } as Record<string, unknown>
+    });
+
+    // Store models in a map for easy access
+    const models = {
+      'gemini-pro': textModel,
+      'gemini-2.0-flash-exp-image-generation': imageModel
+    };
 
     this.protocol = new ProtocolManager();
-    this.handlers = new MCPHandlers(model, this.protocol);
+    this.handlers = new MCPHandlers(models, this.protocol);
     this.clients = new Map();
     this.startTime = new Date();
 
@@ -142,13 +156,13 @@ export class MCPServer {
     }));
   }
 
-  private handleError(ws: WebSocket, error: any): void {
+  private handleError(ws: WebSocket, error: Error | unknown): void {
     const state = this.clients.get(ws);
     this.logError('request', error, state);
 
     if (error instanceof SyntaxError) {
       this.sendError(ws, null, ERROR_CODES.PARSE_ERROR, 'Invalid JSON');
-    } else if (error.code && ERROR_CODES[error.code]) {
+    } else if (error instanceof Error && 'code' in error && typeof error.code === 'number') {
       this.sendError(ws, null, error.code, error.message);
     } else {
       this.sendError(ws, null, ERROR_CODES.INTERNAL_ERROR, 'Internal server error');
@@ -224,13 +238,13 @@ export class MCPServer {
     });
 
     // Close all connections
-    this.clients.forEach((state, client) => {
+    for (const [client, state] of this.clients.entries()) {
       // Cancel any pending requests
-      state.activeRequests.forEach(requestId => {
+      for (const requestId of state.activeRequests) {
         this.handlers.cancelRequest(requestId);
-      });
+      }
       client.close();
-    });
+    }
     
     // Close servers
     await Promise.all([
