@@ -6,7 +6,7 @@ This MCP server implements the Model Context Protocol for Google's Gemini API. I
 
 ## Supported Models
 
-1. **gemini-pro**: Standard text generation model
+1. **gemini-1.5-flash**: Standard text generation model
 2. **gemini-2.0-flash-exp-image-generation**: Text and image generation model with interleaved content support
 
 ## Protocol Implementation
@@ -46,7 +46,7 @@ This MCP server implements the Model Context Protocol for Google's Gemini API. I
   "method": "generate",
   "params": {
     "prompt": "Hello, world!",
-    "model": "gemini-pro"
+    "model": "gemini-1.5-flash"
   }
 }
 
@@ -59,7 +59,7 @@ This MCP server implements the Model Context Protocol for Google's Gemini API. I
     "content": "Generated text...",
     "contentType": "text",
     "metadata": {
-      "model": "gemini-pro",
+      "model": "gemini-1.5-flash",
       "provider": "google"
     }
   }

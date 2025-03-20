@@ -13,10 +13,9 @@ Model Context Protocol (MCP) server implementation that enables Claude Desktop t
 
 ## Models Supported
 
-1. **gemini-pro**: Text generation model
-2. **gemini-2.0-flash-exp-image-generation**: Text and image generation model
-   - Supports interleaved text and images in responses
-   - Uses SynthID watermarking for generated images
+
+2. **gemini-1.5-flash-latest**: Text and image generation model (latest official name)
+3. **gemini-2.0-flash-exp-image-generation**: Legacy name for image generation support
 
 ## Quick Start
 
@@ -52,6 +51,19 @@ Model Context Protocol (MCP) server implementation that enables Claude Desktop t
 
 3. **Restart Claude Desktop**
 
+## Environment Variables
+
+This server supports the following environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GEMINI_API_KEY` | Your Google Gemini API key | Required |
+| `PORT` | Port to run the server on | `3005` |
+| `DEBUG` | Enable debug logging | `false` |
+| `TEXT_MODEL` | Text generation model name | `gemini-1.5-flash` |
+| `IMAGE_MODEL` | Image generation model name | `gemini-1.5-flash-latest` |
+| `DEFAULT_MODEL` | Default model used when not specified | `gemini-1.5-flash` |
+
 ## Image Generation Examples
 
 To generate images with text, specify the image generation model:
@@ -61,7 +73,7 @@ To generate images with text, specify the image generation model:
   "method": "generate",
   "params": {
     "prompt": "Create an image of a futuristic city with flying cars",
-    "model": "gemini-2.0-flash-exp-image-generation"
+    "model": "gemini-1.5-flash-latest"
   }
 }
 ```

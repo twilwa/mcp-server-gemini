@@ -61,7 +61,13 @@ export interface StreamResponse extends MCPResponse {
 
 export interface GenerateRequest extends MCPRequest {
   params: {
-    prompt: string;
+    prompt: string | {
+      text?: string;
+      images?: Array<{
+        data: string;  // base64 encoded image data
+        mimeType: string;
+      }>
+    };
     temperature?: number;
     maxTokens?: number;
     stopSequences?: string[];

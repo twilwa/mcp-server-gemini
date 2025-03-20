@@ -79,7 +79,7 @@ The MCP server will pass appropriate parameters to the Gemini API and return bot
        "prompt": "Your prompt here",
        "temperature": 0.7,
        "maxTokens": 1000,
-       "model": "gemini-pro" // or "gemini-2.0-flash-exp-image-generation" for images
+       "model": "gemini-1.5-flash" // or "gemini-2.0-flash-exp-image-generation" for images
      }
    }
    ```

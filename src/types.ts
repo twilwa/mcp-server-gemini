@@ -1,5 +1,9 @@
 export * from './types/protocols.js';
 
+import type { GoogleGenAI } from '@google/genai';
+
+// No additional Models type needed - use GoogleGenAI directly
+
 export interface ServerCapabilities {
   experimental: {
     imageGeneration?: boolean;
