@@ -31,7 +31,11 @@ Model Context Protocol (MCP) server implementation that enables Claude Desktop t
            "command": "npx",
            "args": ["-y", "github:aliargun/mcp-server-gemini"],
            "env": {
-             "GEMINI_API_KEY": "your_api_key_here"
+             "GEMINI_API_KEY": "your_api_key_here",
+             "DEBUG": "true",
+             "TEXT_MODEL": "gemini-1.5-flash",
+             "IMAGE_MODEL": "gemini-1.5-flash-latest",
+             "DEFAULT_MODEL": "gemini-1.5-flash"
            }
          }
        }
