@@ -27,7 +27,7 @@ export class MCPServer {
     this.httpServer = http.createServer(this.handleHttpRequest.bind(this));
     
     // Create WebSocket server attached to HTTP server
-    this.wss = new WebSocket.Server({ server: this.httpServer });
+    this.wss = new WebSocketServer({ server: this.httpServer });
     
     this.setupWebSocketServer();
     
@@ -35,6 +35,12 @@ export class MCPServer {
     this.httpServer.listen(port, () => {
       console.log(`MCP Server started on port ${port}`);
     });
+  }
+
+  private log(...args: unknown[]): void {
+    if (this.debug) {
+      console.log('[MCP Debug]', ...args);
+    }
   }
 
   private handleHttpRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
@@ -78,6 +84,10 @@ export class MCPServer {
     };
     
     this.clients.set(ws, state);
+
+    // Debug log
+    console.log('New connection established from', state.ip);
+    console.log('Protocol initialized state:', this.protocol.isInitialized());
 
     ws.on('message', async (data: WebSocket.RawData) => {
       try {
@@ -125,9 +135,9 @@ export class MCPServer {
       
       // Cancel any pending requests
       if (state.activeRequests.size > 0) {
-        state.activeRequests.forEach(requestId => {
+        for (const requestId of state.activeRequests) {
           this.handlers.cancelRequest(requestId);
-        });
+        }
       }
     });
 
@@ -170,14 +180,14 @@ export class MCPServer {
 
   private monitorConnections(): void {
     const now = new Date();
-    this.clients.forEach((state, ws) => {
+    for (const [ws, state] of this.clients.entries()) {
       // Check for stale connections (no message in 5 minutes)
       const timeSinceLastMessage = (now.getTime() - state.lastMessageAt.getTime()) / 1000;
       if (timeSinceLastMessage > 300) { // 5 minutes
         console.warn(`Closing stale connection from ${state.ip}`);
         ws.close(1000, 'Connection timeout');
       }
-    });
+    }
   }
 
   private logError(type: string, error: Error, state?: ConnectionState): void {
@@ -203,11 +213,11 @@ export class MCPServer {
 
   broadcast(notification: NotificationMessage): void {
     const message = JSON.stringify(notification);
-    this.clients.forEach((state, client) => {
+    for (const [client, state] of this.clients.entries()) {
       if (client.readyState === WebSocket.OPEN) {
         client.send(message);
       }
-    });
+    }
   }
 
   async shutdown(): Promise<void> {

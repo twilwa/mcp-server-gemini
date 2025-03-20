@@ -1,4 +1,4 @@
-import { MCPRequest, MCPResponse } from '../types';
+import type { MCPRequest, MCPResponse } from '../types.js';
 
 export interface PromptArgument {
   name: string;
@@ -33,7 +33,7 @@ export interface GetPromptRequest extends MCPRequest {
 export interface PromptContent {
   type: 'text' | 'image' | 'resource';
   content: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface GetPromptResponse extends MCPResponse {

@@ -17,7 +17,7 @@ export interface ErrorNotification extends NotificationMessage {
   params: {
     code: number;
     message: string;
-    data?: any;
+    data?: unknown;
   };
 }
 
@@ -26,10 +26,24 @@ export interface ProgressNotification extends NotificationMessage {
   params: ProgressParams;
 }
 
+// Import MCPRequest directly to avoid circular reference
+import type { MCPRequest } from './types/protocols.js';
+
 export interface ShutdownRequest extends MCPRequest {
   method: 'shutdown';
 }
 
 export interface ExitNotification extends NotificationMessage {
   method: 'exit';
+}
+
+// Protocol manager interface for proper typing
+export interface ProtocolManagerInterface {
+  isInitialized(): boolean;
+  markAsInitialized(): void;
+  requestShutdown(): void;
+  isShutdownRequested(): boolean;
+  createInitializeResult(): InitializeResult;
+  createProgressNotification(token: string | number, progress: number, total?: number): ProgressParams;
+  validateState(method: string): void;
 }

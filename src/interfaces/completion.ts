@@ -1,4 +1,4 @@
-import { MCPRequest, MCPResponse } from '../types';
+import type { MCPRequest, MCPResponse } from '../types.js';
 
 export interface CompletionRequest extends MCPRequest {
   method: 'completion/complete';
