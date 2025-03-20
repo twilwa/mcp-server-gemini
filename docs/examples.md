@@ -40,6 +40,35 @@ Human: Yes, please compare how we respond to: "Explain quantum computing in simp
 Claude: I'll use both my own knowledge and ask Gemini through the MCP connection...
 ```
 
+### Image Generation
+
+This MCP server supports Gemini's new interleaved image generation capabilities. Here are examples of how to use it:
+
+#### Basic Image Generation
+
+```
+Human: Can you use Gemini to generate an image of a cat wearing a top hat?
+
+Claude: I'll use the Gemini image generation model to create that for you...
+```
+
+Claude will automatically:
+1. Select the `gemini-2.0-flash-exp-image-generation` model
+2. Configure the request with appropriate `responseModalities`
+3. Display both the generated text and image in its response
+
+#### Advanced Image Generation
+
+For more control over the image generation process, you can specify additional parameters:
+
+```
+Human: Can you generate a detailed landscape in the style of Monet using Gemini?
+
+Claude: I'll configure Gemini for detailed image generation with specific style parameters...
+```
+
+The MCP server will pass appropriate parameters to the Gemini API and return both text and images that can be displayed inline by Claude Desktop.
+
 ### Advanced Features
 
 1. **Parameter Control**
@@ -49,7 +78,8 @@ Claude: I'll use both my own knowledge and ask Gemini through the MCP connection
      "params": {
        "prompt": "Your prompt here",
        "temperature": 0.7,
-       "maxTokens": 1000
+       "maxTokens": 1000,
+       "model": "gemini-pro" // or "gemini-2.0-flash-exp-image-generation" for images
      }
    }
    ```
@@ -60,7 +90,21 @@ Claude: I'll use both my own knowledge and ask Gemini through the MCP connection
      "method": "generate",
      "params": {
        "prompt": "Your prompt here",
-       "stream": true
+       "stream": true,
+       "model": "gemini-2.0-flash-exp-image-generation",
+       "responseModalities": ["Text", "Image"]
+     }
+   }
+   ```
+
+3. **Response Modalities**
+   ```json
+   {
+     "method": "generate",
+     "params": {
+       "prompt": "Create an image of a futuristic city with flying cars",
+       "model": "gemini-2.0-flash-exp-image-generation",
+       "responseModalities": ["Text", "Image"]
      }
    }
    ```
@@ -81,6 +125,11 @@ Claude: I'll use both my own knowledge and ask Gemini through the MCP connection
    - Verify Claude Desktop is running
    - Check if port 3005 is available
    - Look for any firewall restrictions
+
+4. **Image Generation Issues**
+   - Make sure you are using the correct model (`gemini-2.0-flash-exp-image-generation`)
+   - Verify your API key has access to this experimental model
+   - Try with explicit `responseModalities` parameter set to `["Text", "Image"]`
 
 ## Best Practices
 

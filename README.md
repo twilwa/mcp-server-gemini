@@ -9,6 +9,14 @@ Model Context Protocol (MCP) server implementation that enables Claude Desktop t
 - Secure API key handling
 - Configurable model parameters
 - TypeScript implementation
+- **Interleaved image generation support**
+
+## Models Supported
+
+1. **gemini-pro**: Text generation model
+2. **gemini-2.0-flash-exp-image-generation**: Text and image generation model
+   - Supports interleaved text and images in responses
+   - Uses SynthID watermarking for generated images
 
 ## Quick Start
 
@@ -43,6 +51,33 @@ Model Context Protocol (MCP) server implementation that enables Claude Desktop t
      ```
 
 3. **Restart Claude Desktop**
+
+## Image Generation Examples
+
+To generate images with text, specify the image generation model:
+
+```json
+{
+  "method": "generate",
+  "params": {
+    "prompt": "Create an image of a futuristic city with flying cars",
+    "model": "gemini-2.0-flash-exp-image-generation"
+  }
+}
+```
+
+You can also explicitly set response modalities:
+
+```json
+{
+  "method": "generate",
+  "params": {
+    "prompt": "Create an image of a fluffy cat",
+    "model": "gemini-2.0-flash-exp-image-generation",
+    "responseModalities": ["Text", "Image"]
+  }
+}
+```
 
 ## Documentation
 

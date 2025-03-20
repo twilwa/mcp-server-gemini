@@ -1,4 +1,4 @@
-import { ServerCapabilities, ServerInfo, InitializeResult, ProgressParams } from './types';
+import type { ServerCapabilities, ServerInfo, InitializeResult, ProgressParams } from './types.js';
 
 export const PROTOCOL_VERSION = '2024-11-05';
 
@@ -25,7 +25,10 @@ export const SERVER_INFO: ServerInfo = {
 };
 
 export const SERVER_CAPABILITIES: ServerCapabilities = {
-  experimental: {},
+  experimental: {
+    imageGeneration: true,
+    interleaved: true
+  },
   prompts: { listChanged: true },
   resources: { subscribe: true, listChanged: true },
   tools: { listChanged: true },
@@ -35,8 +38,6 @@ export const SERVER_CAPABILITIES: ServerCapabilities = {
 export class ProtocolManager {
   private initialized = false;
   private shutdownRequested = false;
-
-  constructor() {}
 
   isInitialized(): boolean {
     return this.initialized;
